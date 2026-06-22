@@ -118,9 +118,92 @@
       pointer-events: none;
     }
 
+    .hero-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+
     .hero-inner {
-      max-width: 900px;
       position: relative;
+    }
+
+    /* ─── Terminal ─── */
+    .terminal {
+      border-radius: 16px;
+      border: 1px solid var(--border-2);
+      background: rgba(12,13,18,0.9);
+      overflow: hidden;
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.04),
+        0 24px 80px -12px rgba(0,0,0,0.6),
+        0 0 60px -20px var(--accent-dim);
+      backdrop-filter: blur(12px);
+    }
+
+    .terminal-bar {
+      display: flex; align-items: center; gap: 8px;
+      padding: 14px 18px;
+      background: rgba(255,255,255,0.03);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .terminal-dot {
+      width: 12px; height: 12px; border-radius: 50%;
+    }
+    .terminal-dot.r { background: #ff5f57; }
+    .terminal-dot.y { background: #febc2e; }
+    .terminal-dot.g { background: #28c840; }
+
+    .terminal-title {
+      flex: 1; text-align: center;
+      font-family: var(--mono); font-size: 0.72rem;
+      color: var(--text-3); margin-right: 36px;
+    }
+
+    .terminal-body {
+      padding: 20px 22px 28px;
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      line-height: 1.85;
+      min-height: 320px;
+      color: var(--text-2);
+    }
+
+    .t-prompt { color: var(--accent); }
+    .t-cmd { color: var(--text); }
+    .t-comment { color: var(--text-3); font-style: italic; }
+    .t-string { color: #a8d8a8; }
+    .t-keyword { color: #c8a8ff; }
+    .t-func { color: #82c8ff; }
+    .t-type { color: #ffd68a; }
+    .t-op { color: var(--text-3); }
+    .t-number { color: #ffb07a; }
+
+    .t-line {
+      opacity: 0;
+      animation: typeLine 0.3s ease forwards;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    .t-cursor {
+      display: inline-block;
+      width: 8px; height: 16px;
+      background: var(--accent);
+      vertical-align: text-bottom;
+      animation: blink 1s step-end infinite;
+      margin-left: 2px;
+    }
+
+    @keyframes typeLine {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    @keyframes blink {
+      50% { opacity: 0; }
     }
 
     .hero-tag {
@@ -467,6 +550,7 @@
     @media (max-width: 768px) {
       .wrap { width: min(var(--max), calc(100% - 32px)); }
       .hero { padding: 140px 0 80px; }
+      .hero-row { grid-template-columns: 1fr; gap: 40px; }
       .nav-links { display: none; }
       .services-grid { grid-template-columns: 1fr; }
       .approach-grid { grid-template-columns: 1fr; }
@@ -479,6 +563,7 @@
       .approach-panel { padding: 32px 24px; }
       .cta-box { padding: 48px 24px; }
       .stack-row { gap: 8px; }
+      .terminal-body { min-height: 260px; }
     }
 
     @media (max-width: 480px) {
@@ -514,19 +599,31 @@
       <!-- ─── Hero ─── -->
       <section class="hero">
         <div class="wrap">
-          <div class="hero-inner">
-            <div class="hero-tag reveal"><span class="pulse"></span> Software consulting for serious teams</div>
-            <h1 class="reveal reveal-d1">
-              <span class="line glow">Engineer it</span>
-              <span class="line dim">right the</span>
-              <span class="line">first time.</span>
-            </h1>
-            <p class="hero-desc reveal reveal-d2">
-              Orwell Software Consulting LLC delivers precision engineering across mobile platforms, cloud infrastructure, AI systems, and full-stack product development.
-            </p>
-            <div class="hero-actions reveal reveal-d3">
-              <a class="btn-primary" href="#contact">Start a project →</a>
-              <a class="btn-ghost" href="#services">How we work</a>
+          <div class="hero-row">
+            <div class="hero-inner">
+              <div class="hero-tag reveal"><span class="pulse"></span> Software consulting for serious teams</div>
+              <h1 class="reveal reveal-d1">
+                <span class="line glow">Engineer it</span>
+                <span class="line dim">right the</span>
+                <span class="line">first time.</span>
+              </h1>
+              <p class="hero-desc reveal reveal-d2">
+                Orwell Software Consulting LLC delivers precision engineering across mobile platforms, cloud infrastructure, AI systems, and full-stack product development.
+              </p>
+              <div class="hero-actions reveal reveal-d3">
+                <a class="btn-primary" href="#contact">Start a project →</a>
+                <a class="btn-ghost" href="#services">How we work</a>
+              </div>
+            </div>
+
+            <div class="terminal reveal reveal-d2">
+              <div class="terminal-bar">
+                <span class="terminal-dot r"></span>
+                <span class="terminal-dot y"></span>
+                <span class="terminal-dot g"></span>
+                <span class="terminal-title">orwell — zsh</span>
+              </div>
+              <div class="terminal-body" id="term"></div>
             </div>
           </div>
         </div>
@@ -736,6 +833,83 @@
     }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
 
     document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+    /* ─── Terminal typing animation ─── */
+    (() => {
+      const lines = [
+        { text: '$ ssh deploy@orwell.technology', cls: '' },
+        { text: '  Connected. Welcome back.', cls: 't-comment' },
+        { text: '', cls: '' },
+        { text: '$ cat architecture.swift', cls: '' },
+        { text: '', cls: '' },
+        { text: '<span class="t-keyword">import</span> <span class="t-type">Foundation</span>', cls: '' },
+        { text: '<span class="t-keyword">import</span> <span class="t-type">Distributed</span>', cls: '' },
+        { text: '', cls: '' },
+        { text: '<span class="t-comment">/// Core service orchestrator</span>', cls: '' },
+        { text: '<span class="t-keyword">distributed actor</span> <span class="t-type">ServiceMesh</span> {', cls: '' },
+        { text: '  <span class="t-keyword">let</span> nodes: [<span class="t-type">Node</span>]', cls: '' },
+        { text: '  <span class="t-keyword">let</span> config: <span class="t-type">ClusterConfig</span>', cls: '' },
+        { text: '', cls: '' },
+        { text: '  <span class="t-keyword">distributed func</span> <span class="t-func">deploy</span>(', cls: '' },
+        { text: '    _ service: <span class="t-type">Service</span>,', cls: '' },
+        { text: '    replicas: <span class="t-type">Int</span> <span class="t-op">=</span> <span class="t-number">3</span>', cls: '' },
+        { text: '  ) <span class="t-keyword">async throws</span> <span class="t-op">-></span> <span class="t-type">Deployment</span> {', cls: '' },
+        { text: '    <span class="t-keyword">let</span> plan <span class="t-op">=</span> <span class="t-keyword">try await</span>', cls: '' },
+        { text: '      <span class="t-func">buildPlan</span>(service, on: nodes)', cls: '' },
+        { text: '    <span class="t-keyword">return try await</span> plan.<span class="t-func">execute</span>()', cls: '' },
+        { text: '  }', cls: '' },
+        { text: '}', cls: '' },
+        { text: '', cls: '' },
+        { text: '<span class="t-prompt">✓</span> <span class="t-string">Build succeeded</span> — <span class="t-comment">0 errors, 0 warnings</span>', cls: '' },
+        { text: '<span class="t-prompt">✓</span> <span class="t-string">Tests passed</span> — <span class="t-comment">248/248 (100%)</span>', cls: '' },
+        { text: '<span class="t-prompt">✓</span> <span class="t-string">Deployed to production</span>', cls: '' },
+      ];
+
+      const term = document.getElementById('term');
+      if (!term) return;
+      let i = 0;
+
+      function addLine() {
+        if (i >= lines.length) {
+          // Add blinking cursor at the end
+          const cursorLine = document.createElement('div');
+          cursorLine.innerHTML = '<span class="t-prompt">$</span> <span class="t-cursor"></span>';
+          term.appendChild(cursorLine);
+          // Restart after pause
+          setTimeout(() => {
+            term.innerHTML = '';
+            i = 0;
+            addLine();
+          }, 6000);
+          return;
+        }
+
+        const line = lines[i];
+        const div = document.createElement('div');
+        div.className = 't-line' + (line.cls ? ' ' + line.cls : '');
+        div.style.animationDelay = '0s';
+
+        if (line.text === '') {
+          div.innerHTML = '&nbsp;';
+        } else if (line.text.startsWith('$')) {
+          div.innerHTML = '<span class="t-prompt">$</span><span class="t-cmd">' + line.text.slice(1) + '</span>';
+        } else {
+          div.innerHTML = line.text;
+        }
+
+        term.appendChild(div);
+        i++;
+
+        // Scroll terminal to bottom
+        term.scrollTop = term.scrollHeight;
+
+        const delay = line.text === '' ? 40 : line.text.startsWith('$') ? 120 : 70;
+        setTimeout(addLine, delay);
+      }
+
+      // Start after hero reveal
+      setTimeout(addLine, 1200);
+    })();
   </script>
 </body>
 </html>
