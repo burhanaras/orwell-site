@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Orwell Software Consulting LLC</title>
+  <meta name="description" content="Precision software consulting. We architect, build, and ship production systems — mobile, cloud, AI, and beyond." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #08090c;
+      --bg-2: #0e1014;
+      --surface: rgba(255,255,255,0.04);
+      --surface-2: rgba(255,255,255,0.07);
+      --surface-3: rgba(255,255,255,0.10);
+      --border: rgba(255,255,255,0.08);
+      --border-2: rgba(255,255,255,0.14);
+      --text: #f0f2f5;
+      --text-2: #a0a8b4;
+      --text-3: #636b78;
+      --accent: #c8ff3c;
+      --accent-dim: rgba(200,255,60,0.12);
+      --accent-glow: rgba(200,255,60,0.25);
+      --mono: 'JetBrains Mono', monospace;
+      --sans: 'Inter', system-ui, -apple-system, sans-serif;
+      --max: 1200px;
+      --radius: 20px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    ::selection { background: var(--accent); color: var(--bg); }
+
+    /* ─── Grain Overlay ─── */
+    .grain {
+      position: fixed; inset: 0; pointer-events: none; z-index: 0; opacity: 0.35;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='.18'/%3E%3C/svg%3E");
+      mix-blend-mode: overlay;
+    }
+
+    .page { position: relative; z-index: 1; }
+
+    .wrap {
+      width: min(var(--max), calc(100% - 48px));
+      margin: 0 auto;
+    }
+
+    /* ─── Header ─── */
+    header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      backdrop-filter: blur(24px) saturate(1.5);
+      -webkit-backdrop-filter: blur(24px) saturate(1.5);
+      background: rgba(8,9,12,0.65);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav {
+      display: flex; align-items: center; justify-content: space-between;
+      min-height: 72px; gap: 32px;
+    }
+
+    .logo {
+      display: flex; align-items: center; gap: 14px;
+      font-weight: 800; font-size: 1.05rem; letter-spacing: -0.04em;
+    }
+
+    .logo-mark {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: var(--accent);
+      display: grid; place-items: center;
+      color: var(--bg); font-weight: 900; font-size: 1rem;
+      box-shadow: 0 0 28px var(--accent-glow);
+    }
+
+    .nav-links {
+      display: flex; align-items: center; gap: 28px;
+      font-size: 0.9rem; color: var(--text-2); font-weight: 500;
+    }
+
+    .nav-links a { transition: color 0.2s; }
+    .nav-links a:hover { color: var(--text); }
+
+    .nav-cta {
+      font-size: 0.85rem; font-weight: 700; padding: 10px 20px;
+      border-radius: 999px; background: var(--surface-2);
+      border: 1px solid var(--border-2); transition: all 0.2s;
+      color: var(--text);
+    }
+    .nav-cta:hover {
+      background: var(--accent); color: var(--bg);
+      border-color: var(--accent); box-shadow: 0 0 30px var(--accent-glow);
+    }
+
+    /* ─── Hero ─── */
+    .hero {
+      padding: 180px 0 120px;
+      position: relative;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute; top: -200px; left: 50%; transform: translateX(-50%);
+      width: 900px; height: 900px;
+      background: radial-gradient(circle, var(--accent-dim) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      max-width: 900px;
+      position: relative;
+    }
+
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-family: var(--mono); font-size: 0.78rem; font-weight: 500;
+      color: var(--accent); text-transform: uppercase; letter-spacing: 0.14em;
+      margin-bottom: 32px; padding: 8px 16px;
+      border: 1px solid rgba(200,255,60,0.18);
+      border-radius: 999px; background: rgba(200,255,60,0.06);
+    }
+
+    .hero-tag .pulse {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 12px var(--accent);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    .hero h1 {
+      font-size: clamp(3.2rem, 7.5vw, 7rem);
+      line-height: 0.9;
+      letter-spacing: -0.06em;
+      font-weight: 900;
+      margin-bottom: 36px;
+    }
+
+    .hero h1 .line { display: block; }
+
+    .hero h1 .dim {
+      color: var(--text-3);
+    }
+
+    .hero h1 .glow {
+      background: linear-gradient(135deg, var(--accent) 20%, #ffffff 80%);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+
+    .hero-desc {
+      font-size: 1.15rem; color: var(--text-2);
+      max-width: 560px; margin-bottom: 48px; line-height: 1.7;
+    }
+
+    .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 16px 28px; border-radius: 999px;
+      background: var(--accent); color: var(--bg);
+      font-weight: 800; font-size: 0.95rem;
+      border: none; cursor: pointer;
+      box-shadow: 0 0 40px var(--accent-glow);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 60px var(--accent-glow);
+    }
+
+    .btn-ghost {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 16px 28px; border-radius: 999px;
+      background: var(--surface); color: var(--text);
+      font-weight: 700; font-size: 0.95rem;
+      border: 1px solid var(--border-2); cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-ghost:hover {
+      background: var(--surface-2);
+      border-color: rgba(255,255,255,0.22);
+      transform: translateY(-2px);
+    }
+
+    /* ─── Metrics strip ─── */
+    .metrics {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      margin: 0 0 100px;
+    }
+
+    .metric-item {
+      padding: 40px 0;
+      text-align: center;
+      border-right: 1px solid var(--border);
+    }
+    .metric-item:last-child { border-right: none; }
+
+    .metric-num {
+      font-size: 2.8rem; font-weight: 900; letter-spacing: -0.06em;
+      line-height: 1;
+      background: linear-gradient(180deg, var(--text) 40%, var(--text-3) 100%);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+
+    .metric-label {
+      margin-top: 8px; font-size: 0.82rem; color: var(--text-3);
+      font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em;
+    }
+
+    /* ─── Section common ─── */
+    .section { padding: 100px 0; }
+
+    .section-label {
+      font-family: var(--mono); font-size: 0.75rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.16em;
+      color: var(--accent); margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-size: clamp(2rem, 4.5vw, 3.4rem);
+      line-height: 1.05; letter-spacing: -0.05em;
+      font-weight: 800; margin-bottom: 20px;
+      max-width: 680px;
+    }
+
+    .section-desc {
+      color: var(--text-2); font-size: 1.05rem;
+      max-width: 540px; margin-bottom: 56px;
+    }
+
+    /* ─── Services Grid ─── */
+    .services-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1px; background: var(--border);
+      border: 1px solid var(--border); border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .service-card {
+      padding: 40px 32px; background: var(--bg-2);
+      transition: background 0.3s;
+      position: relative;
+    }
+    .service-card:hover { background: rgba(14,16,20,0.95); }
+
+    .service-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0;
+      height: 2px; background: var(--accent); transform: scaleX(0);
+      transform-origin: left; transition: transform 0.4s ease;
+    }
+    .service-card:hover::before { transform: scaleX(1); }
+
+    .service-num {
+      font-family: var(--mono); font-size: 0.72rem; font-weight: 700;
+      color: var(--text-3); margin-bottom: 24px;
+      letter-spacing: 0.08em;
+    }
+
+    .service-icon {
+      font-size: 1.6rem; margin-bottom: 20px;
+      width: 52px; height: 52px; border-radius: 14px;
+      background: var(--surface-2); border: 1px solid var(--border);
+      display: grid; place-items: center;
+    }
+
+    .service-card h3 {
+      font-size: 1.15rem; font-weight: 800;
+      letter-spacing: -0.03em; margin-bottom: 12px;
+    }
+
+    .service-card p {
+      color: var(--text-2); font-size: 0.92rem; line-height: 1.65;
+    }
+
+    /* ─── Approach split ─── */
+    .approach-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .approach-panel {
+      border-radius: var(--radius); padding: 48px 40px;
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, var(--surface) 0%, transparent 100%);
+      position: relative; overflow: hidden;
+    }
+
+    .approach-panel::after {
+      content: ''; position: absolute; top: -1px; left: 40px; right: 40px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent-dim), transparent);
+    }
+
+    .approach-panel h3 {
+      font-size: 1.5rem; font-weight: 800;
+      letter-spacing: -0.04em; margin-bottom: 16px;
+    }
+
+    .approach-panel p {
+      color: var(--text-2); font-size: 0.95rem; margin-bottom: 28px;
+      line-height: 1.7;
+    }
+
+    .check-list {
+      list-style: none; display: grid; gap: 12px;
+    }
+
+    .check-list li {
+      display: flex; gap: 12px; align-items: flex-start;
+      color: var(--text-2); font-size: 0.93rem; line-height: 1.6;
+      padding: 14px 16px; border-radius: 14px;
+      background: var(--surface); border: 1px solid var(--border);
+    }
+
+    .check-list .ck {
+      color: var(--accent); font-weight: 800; flex-shrink: 0; margin-top: 1px;
+    }
+
+    /* ─── Process ─── */
+    .process-track {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 2px; position: relative;
+    }
+
+    .process-track::before {
+      content: ''; position: absolute;
+      top: 52px; left: 12.5%; right: 12.5%;
+      height: 1px;
+      background: linear-gradient(90deg, var(--border), var(--accent-dim), var(--accent-dim), var(--border));
+    }
+
+    .proc-step {
+      text-align: center; padding: 0 16px;
+      position: relative;
+    }
+
+    .proc-num {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: var(--bg); border: 2px solid var(--border-2);
+      display: inline-grid; place-items: center;
+      font-family: var(--mono); font-size: 0.82rem; font-weight: 700;
+      color: var(--text-3); margin-bottom: 28px;
+      position: relative; z-index: 2;
+      transition: all 0.3s;
+    }
+
+    .proc-step:hover .proc-num {
+      border-color: var(--accent); color: var(--accent);
+      box-shadow: 0 0 20px var(--accent-dim);
+    }
+
+    .proc-step h3 {
+      font-size: 1.05rem; font-weight: 800;
+      letter-spacing: -0.02em; margin-bottom: 10px;
+    }
+
+    .proc-step p {
+      color: var(--text-3); font-size: 0.88rem; line-height: 1.6;
+      max-width: 220px; margin: 0 auto;
+    }
+
+    /* ─── Tech stack ─── */
+    .stack-row {
+      display: flex; flex-wrap: wrap; gap: 10px;
+      justify-content: center; padding: 60px 0 0;
+    }
+
+    .stack-tag {
+      padding: 10px 18px; border-radius: 999px;
+      background: var(--surface); border: 1px solid var(--border);
+      font-size: 0.82rem; font-weight: 600; color: var(--text-2);
+      font-family: var(--mono);
+      transition: all 0.2s;
+    }
+    .stack-tag:hover {
+      border-color: var(--accent); color: var(--accent);
+      background: var(--accent-dim);
+    }
+
+    /* ─── CTA ─── */
+    .cta-section { padding: 80px 0 120px; }
+
+    .cta-box {
+      text-align: center; padding: 80px 40px;
+      border-radius: 28px; position: relative;
+      border: 1px solid var(--border);
+      background:
+        radial-gradient(ellipse at 50% -20%, var(--accent-dim) 0%, transparent 50%),
+        var(--surface);
+      overflow: hidden;
+    }
+
+    .cta-box::before {
+      content: ''; position: absolute; inset: -1px;
+      border-radius: inherit;
+      background: linear-gradient(180deg, rgba(200,255,60,0.12), transparent 40%);
+      z-index: 0; pointer-events: none;
+    }
+
+    .cta-box > * { position: relative; z-index: 1; }
+
+    .cta-box h2 {
+      font-size: clamp(2rem, 5vw, 3.8rem);
+      line-height: 1; letter-spacing: -0.06em;
+      font-weight: 900; margin-bottom: 18px;
+    }
+
+    .cta-box p {
+      color: var(--text-2); font-size: 1.05rem;
+      max-width: 480px; margin: 0 auto 36px;
+    }
+
+    /* ─── Footer ─── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 28px 0; color: var(--text-3); font-size: 0.85rem;
+    }
+
+    .footer-inner {
+      display: flex; justify-content: space-between;
+      align-items: center; gap: 16px; flex-wrap: wrap;
+    }
+
+    .footer-links {
+      display: flex; gap: 20px;
+    }
+    .footer-links a:hover { color: var(--text-2); }
+
+    /* ─── Animations ─── */
+    .reveal {
+      opacity: 0; transform: translateY(24px);
+      transition: opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1);
+    }
+    .reveal.in { opacity: 1; transform: none; }
+
+    .reveal-d1 { transition-delay: 0.08s; }
+    .reveal-d2 { transition-delay: 0.16s; }
+    .reveal-d3 { transition-delay: 0.24s; }
+    .reveal-d4 { transition-delay: 0.32s; }
+    .reveal-d5 { transition-delay: 0.40s; }
+
+    /* ─── Responsive ─── */
+    @media (max-width: 1024px) {
+      .services-grid { grid-template-columns: repeat(2, 1fr); }
+      .process-track { grid-template-columns: repeat(2, 1fr); gap: 40px; }
+      .process-track::before { display: none; }
+    }
+
+    @media (max-width: 768px) {
+      .wrap { width: min(var(--max), calc(100% - 32px)); }
+      .hero { padding: 140px 0 80px; }
+      .nav-links { display: none; }
+      .services-grid { grid-template-columns: 1fr; }
+      .approach-grid { grid-template-columns: 1fr; }
+      .metrics { grid-template-columns: repeat(2, 1fr); }
+      .metric-item:nth-child(2) { border-right: none; }
+      .process-track { grid-template-columns: 1fr; gap: 32px; }
+      .proc-step { text-align: left; display: flex; gap: 20px; align-items: flex-start; padding: 0; }
+      .proc-step p { margin: 0; }
+      .proc-num { margin-bottom: 0; flex-shrink: 0; }
+      .approach-panel { padding: 32px 24px; }
+      .cta-box { padding: 48px 24px; }
+      .stack-row { gap: 8px; }
+    }
+
+    @media (max-width: 480px) {
+      .hero h1 { font-size: clamp(2.6rem, 14vw, 4rem); }
+      .hero-actions { flex-direction: column; }
+      .btn-primary, .btn-ghost { width: 100%; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+  <div class="grain"></div>
+  <div class="page">
+
+    <!-- ─── Header ─── -->
+    <header>
+      <div class="wrap nav">
+        <a class="logo" href="#top">
+          <span class="logo-mark">O</span>
+          <span>Orwell</span>
+        </a>
+        <nav class="nav-links">
+          <a href="#services">Services</a>
+          <a href="#approach">Approach</a>
+          <a href="#process">Process</a>
+          <a href="#contact">Contact</a>
+        </nav>
+        <a class="nav-cta" href="#contact">Get in touch</a>
+      </div>
+    </header>
+
+    <main id="top">
+
+      <!-- ─── Hero ─── -->
+      <section class="hero">
+        <div class="wrap">
+          <div class="hero-inner">
+            <div class="hero-tag reveal"><span class="pulse"></span> Software consulting for serious teams</div>
+            <h1 class="reveal reveal-d1">
+              <span class="line glow">Engineer it</span>
+              <span class="line dim">right the</span>
+              <span class="line">first time.</span>
+            </h1>
+            <p class="hero-desc reveal reveal-d2">
+              Orwell Software Consulting LLC delivers precision engineering across mobile platforms, cloud infrastructure, AI systems, and full-stack product development.
+            </p>
+            <div class="hero-actions reveal reveal-d3">
+              <a class="btn-primary" href="#contact">Start a project →</a>
+              <a class="btn-ghost" href="#services">How we work</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ─── Metrics ─── -->
+      <div class="wrap">
+        <div class="metrics reveal">
+          <div class="metric-item">
+            <div class="metric-num">15+</div>
+            <div class="metric-label">Years in Production</div>
+          </div>
+          <div class="metric-item">
+            <div class="metric-num">200M+</div>
+            <div class="metric-label">Users Served</div>
+          </div>
+          <div class="metric-item">
+            <div class="metric-num">40+</div>
+            <div class="metric-label">Systems Shipped</div>
+          </div>
+          <div class="metric-item">
+            <div class="metric-num">100%</div>
+            <div class="metric-label">Senior Engineers</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── Services ─── -->
+      <section id="services" class="section">
+        <div class="wrap">
+          <div class="section-label reveal">Services</div>
+          <h2 class="section-title reveal">We build the systems that make products work.</h2>
+          <p class="section-desc reveal">End-to-end software engineering, from architecture to deployment, without the overhead of scaling a team internally.</p>
+
+          <div class="services-grid">
+            <div class="service-card reveal reveal-d1">
+              <div class="service-num">01</div>
+              <div class="service-icon">⌁</div>
+              <h3>Mobile Engineering</h3>
+              <p>Native iOS and cross-platform development. SwiftUI architecture, performance optimization, CI/CD pipelines, and App Store delivery.</p>
+            </div>
+            <div class="service-card reveal reveal-d2">
+              <div class="service-num">02</div>
+              <div class="service-icon">◈</div>
+              <h3>Cloud & Backend</h3>
+              <p>Scalable API design, microservice architecture, database engineering, authentication systems, and cloud infrastructure on AWS, GCP, or Azure.</p>
+            </div>
+            <div class="service-card reveal reveal-d3">
+              <div class="service-num">03</div>
+              <div class="service-icon">✦</div>
+              <h3>AI & Machine Learning</h3>
+              <p>Production AI integration — on-device inference, LLM orchestration, data pipelines, document intelligence, and ML-powered automation.</p>
+            </div>
+            <div class="service-card reveal reveal-d1">
+              <div class="service-num">04</div>
+              <div class="service-icon">▧</div>
+              <h3>Architecture Advisory</h3>
+              <p>Technical audits, system design, build-vs-buy analysis, tech debt reduction, and migration planning for growing engineering organizations.</p>
+            </div>
+            <div class="service-card reveal reveal-d2">
+              <div class="service-num">05</div>
+              <div class="service-icon">↗</div>
+              <h3>Product Development</h3>
+              <p>Full-cycle product engineering — from prototype to production. We handle the entire technical execution so your team stays focused on the business.</p>
+            </div>
+            <div class="service-card reveal reveal-d3">
+              <div class="service-num">06</div>
+              <div class="service-icon">⊞</div>
+              <h3>DevOps & Platform</h3>
+              <p>Container orchestration, CI/CD automation, infrastructure as code, monitoring, incident response, and production reliability engineering.</p>
+            </div>
+          </div>
+
+          <div class="stack-row reveal">
+            <span class="stack-tag">Swift</span>
+            <span class="stack-tag">SwiftUI</span>
+            <span class="stack-tag">Kotlin</span>
+            <span class="stack-tag">React</span>
+            <span class="stack-tag">TypeScript</span>
+            <span class="stack-tag">Python</span>
+            <span class="stack-tag">Go</span>
+            <span class="stack-tag">Node.js</span>
+            <span class="stack-tag">PostgreSQL</span>
+            <span class="stack-tag">Redis</span>
+            <span class="stack-tag">Docker</span>
+            <span class="stack-tag">Kubernetes</span>
+            <span class="stack-tag">AWS</span>
+            <span class="stack-tag">GCP</span>
+            <span class="stack-tag">Terraform</span>
+            <span class="stack-tag">PyTorch</span>
+            <span class="stack-tag">CoreML</span>
+            <span class="stack-tag">GraphQL</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ─── Approach ─── -->
+      <section id="approach" class="section">
+        <div class="wrap">
+          <div class="section-label reveal">Approach</div>
+          <h2 class="section-title reveal">We don't scale bodies. We solve problems.</h2>
+          <p class="section-desc reveal">Every engagement starts with clarity — what needs to be built, why, and what success looks like before a single line of code ships.</p>
+
+          <div class="approach-grid">
+            <div class="approach-panel reveal">
+              <h3>What makes us different</h3>
+              <p>Orwell is not a staffing agency. We are a focused engineering firm that takes ownership of technical outcomes — from design through deployment and handoff.</p>
+              <ul class="check-list">
+                <li><span class="ck">✓</span><span>Senior-only engineers. No juniors learning on your budget.</span></li>
+                <li><span class="ck">✓</span><span>Clear scope and milestones before work begins.</span></li>
+                <li><span class="ck">✓</span><span>Direct communication. No project managers in between.</span></li>
+                <li><span class="ck">✓</span><span>Production-ready code with tests, docs, and clean handoff.</span></li>
+              </ul>
+            </div>
+
+            <div class="approach-panel reveal reveal-d1">
+              <h3>When to call us</h3>
+              <ul class="check-list">
+                <li><span class="ck">→</span><span>You have a product vision but need senior engineering to turn it into a technical plan and working system.</span></li>
+                <li><span class="ck">→</span><span>Your existing codebase or architecture is creating drag. You need an audit and a path forward.</span></li>
+                <li><span class="ck">→</span><span>You want to add AI capabilities to your product without building a fragile prototype.</span></li>
+                <li><span class="ck">→</span><span>You need to ship on a hard deadline and cannot afford a slow hiring cycle.</span></li>
+                <li><span class="ck">→</span><span>You're scaling and need someone to design the foundation before the team grows around it.</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ─── Process ─── -->
+      <section id="process" class="section">
+        <div class="wrap">
+          <div class="section-label reveal">Process</div>
+          <h2 class="section-title reveal">Four phases. No ambiguity.</h2>
+          <p class="section-desc reveal">Structured enough to be predictable. Lean enough to move fast.</p>
+
+          <div class="process-track">
+            <div class="proc-step reveal reveal-d1">
+              <div class="proc-num">01</div>
+              <div>
+                <h3>Discover</h3>
+                <p>Define the business goal, constraints, timeline, and what real success looks like — before writing any code.</p>
+              </div>
+            </div>
+            <div class="proc-step reveal reveal-d2">
+              <div class="proc-num">02</div>
+              <div>
+                <h3>Design</h3>
+                <p>Architecture, scope, milestones, and a clear implementation plan. Decisions are locked before heavy engineering starts.</p>
+              </div>
+            </div>
+            <div class="proc-step reveal reveal-d3">
+              <div class="proc-num">03</div>
+              <div>
+                <h3>Build</h3>
+                <p>Focused iteration with continuous delivery. Progress is visible, communication is direct, quality is non-negotiable.</p>
+              </div>
+            </div>
+            <div class="proc-step reveal reveal-d4">
+              <div class="proc-num">04</div>
+              <div>
+                <h3>Ship</h3>
+                <p>Production release, documentation, monitoring, knowledge transfer, and planning for what comes next.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ─── CTA ─── -->
+      <section id="contact" class="cta-section">
+        <div class="wrap">
+          <div class="cta-box reveal">
+            <h2>Ready to build?</h2>
+            <p>Tell us what you're working on, where you're stuck, and when it needs to ship. We'll take it from there.</p>
+            <a class="btn-primary" href="mailto:finance@orwell.technology?subject=Project%20Inquiry">Contact Orwell →</a>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- ─── Footer ─── -->
+    <footer>
+      <div class="wrap footer-inner">
+        <div>© <span id="yr"></span> Orwell Software Consulting LLC · SF Bay Area, CA</div>
+        <div class="footer-links">
+          <a href="#services">Services</a>
+          <a href="#approach">Approach</a>
+          <a href="#process">Process</a>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <script>
+    document.getElementById('yr').textContent = new Date().getFullYear();
+
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('in');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+  </script>
+</body>
+</html>
